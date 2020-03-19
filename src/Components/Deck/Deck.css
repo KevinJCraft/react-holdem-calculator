@@ -1,7 +1,10 @@
 .deck {
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	flex-wrap: wrap;
 	height: 700px;
-	width: 200px;
+	width: 95%;
+	max-width: 300px;
+	margin: auto;
 }

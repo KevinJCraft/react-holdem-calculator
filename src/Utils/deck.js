@@ -4,10 +4,8 @@ class Deck {
 	}
 
 	createDeck() {
-		let color = ["red", "green", "black", "blue"];
 		let suit = ["heart", "club", "spade", "diamond"];
 		let rank = [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
-		let rankName = ["A", "K", "Q", "J", "T", 9, 8, 7, 6, 5, 4, 3, 2];
 		let suitIndex = 0;
 		let rankIndex = 0;
 		let Deck = [];
@@ -17,9 +15,8 @@ class Deck {
 
 			card.suit = suit[suitIndex];
 			card.rank = rank[rankIndex];
-			card.color = color[suitIndex];
 			card.identifier = i;
-			card.rankName = rankName[rankIndex];
+			card.location = "deck";
 
 			Deck.push(card);
 

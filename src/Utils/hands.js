@@ -10,26 +10,6 @@ class Hand {
 		this.quads = [];
 	}
 
-	getCards(deck, amount = 1) {
-		this.cards = this.cards.concat(deck.dealCard(amount));
-	}
-
-	copyHand() {
-		return this.cards;
-	}
-
-	show() {
-		let str = "";
-		this.cards.forEach(e => {
-			str += "<span style='color: " + e.color + "'>" + e.name + "</span>  ";
-		});
-		return str;
-	}
-
-	muck() {
-		this.cards = [];
-	}
-
 	swapCards(i, j) {
 		this.cards[i] = this.cards.splice(j, 1, this.cards[i])[0];
 	}
@@ -46,10 +26,6 @@ class Hand {
 		this.cards.sort((a, b) => {
 			return b.rank - a.rank;
 		});
-	}
-
-	print(el) {
-		el.innerHTML = this.show();
 	}
 
 	resetGroupings() {

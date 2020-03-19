@@ -5,6 +5,8 @@
 	position: relative;
 	border: black 1px solid;
 	background-color: black;
+	margin-right: 0.25em;
+	margin-left: 0.25em;
 }
 
 .card div {
@@ -32,4 +34,20 @@
 }
 .green {
 	background-color: green;
+}
+
+.purple {
+	background-color: purple;
+}
+
+.in-deck {
+	filter: opacity(0.5);
+}
+
+.in-current-hand {
+	filter: opacity(1);
+}
+
+.in-other-hand {
+	filter: opacity(0.1);
 }
