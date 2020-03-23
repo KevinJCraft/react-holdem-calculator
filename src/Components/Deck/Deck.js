@@ -12,7 +12,7 @@ const DisplayDeck = ({ setHoleCard, players, focusIndex }) => {
 				<Card
 					card={card}
 					key={index}
-					setHoleCard={() => setHoleCard(card)}
+					setHoleCard={() => setHoleCard(card, 2)}
 					players={players}
 					focusIndex={focusIndex}
 				/>

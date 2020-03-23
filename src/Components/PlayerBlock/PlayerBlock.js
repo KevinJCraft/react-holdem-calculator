@@ -1,5 +1,5 @@
 import React from "react";
-import HoleCard from "./HoleCard";
+import HoleCard from "../HoleCard";
 import "./PlayerBlock.css";
 
 const PlayerBlock = ({ player, handleClick, isFocused, index, handleDeletePlayer }) => {

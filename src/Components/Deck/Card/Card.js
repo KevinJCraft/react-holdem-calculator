@@ -68,7 +68,8 @@ function getRankName(rank) {
 const Card = ({ card, setHoleCard, focusIndex, players }) => {
 	function getLocationStyle(location) {
 		if (location === "deck") return "in-deck";
-		if (location === players[focusIndex].key) return "in-current-hand";
+		if (location === "board" && focusIndex === 99) return "in-current-hand"
+		if (focusIndex !== 99 && location === players[focusIndex].key) return "in-current-hand";
 		return "in-other-hand";
 	}
 
