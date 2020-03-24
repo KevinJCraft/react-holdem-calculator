@@ -10,6 +10,21 @@ class Hand {
 		this.quads = [];
 	}
 
+	resetResults() {
+		this.wins = 0;
+		this.handsPlayed = 0;
+		this.ties = 0;
+	}
+
+	getWinPercentage() {
+		if(this.handsPlayed === 0) return 0
+		return ((this.wins / this.handsPlayed)*100).toFixed(2);
+	}
+	getTiePercentage() {
+		if(this.handsPlayed === 0) return 0
+		return ((this.ties / this.handsPlayed)*100).toFixed(2);
+	}
+
 	swapCards(i, j) {
 		this.cards[i] = this.cards.splice(j, 1, this.cards[i])[0];
 	}

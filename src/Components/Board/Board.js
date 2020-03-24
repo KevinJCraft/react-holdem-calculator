@@ -6,10 +6,10 @@ const Board = ({ board, handleClick, isFocused, index, handleDeletePlayer }) => 
     const displayBoardCards = () => {
         let boardCards = []
         for(let i = 0; i < 5; i++) {
-            board.hand[i] ? (
-              boardCards.push(  <HoleCard card={board.hand[i]} />)
+            board.cards[i] ? (
+              boardCards.push(  <HoleCard card={board.cards[i]} key={i} />)
             ) : (
-              boardCards.push(<HoleCard card={{ color: "purple", rankName: "", suit: "" }} />)
+              boardCards.push(<HoleCard card={{ color: "purple", rankName: "", suit: "" }} key={i} />)
             )
         }
         return boardCards

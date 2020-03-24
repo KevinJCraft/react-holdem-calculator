@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Card from "./Card";
-import Deck from "../../Utils/deck";
 import "./Deck.css";
 
-const DisplayDeck = ({ setHoleCard, players, focusIndex }) => {
-	const [deck, setDeck] = useState(new Deck());
+const DisplayDeck = ({ setHoleCard, players, focusIndex, deck }) => {
 
 	return (
 		<div className="deck">
