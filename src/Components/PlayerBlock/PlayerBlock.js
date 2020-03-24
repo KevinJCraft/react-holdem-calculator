@@ -6,7 +6,7 @@ const PlayerBlock = ({ player, handleClick, isFocused, index, handleDeletePlayer
 	return (
 		<div
 			className={`player-card ${isFocused && "is-focused"}`}
-			onClick={handleClick}
+			onClick={(event) => handleClick(event)}
 		>
 			<div className="player-card-cards">
 				{player.hand.cards[0] ? (

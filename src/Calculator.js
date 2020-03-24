@@ -77,6 +77,10 @@ const Calculator = () => {
 	}
 
 	const handleDeletePlayer =(indexToDelete) => {
+		if(indexToDelete === focusIndex) {
+			
+			setFocusIndex(0)
+		}
 		if(players.length > 2) {
 
 			players[indexToDelete].hand.cards.forEach( card => card.location = "deck")
@@ -210,6 +214,11 @@ const Calculator = () => {
 		setDeck( new Deck())
 		setBoard( {cards: [], key: shortid()})
 	}
+
+	const handleFocusClick = (event, index) => {
+		if( event.target.className.includes("player-card-delete")) return
+		setFocusIndex(index)
+	}
 	return (
 		<div className="Calculator">
 			<Header />
@@ -218,7 +227,7 @@ const Calculator = () => {
 					<PlayerBlock
 						player={player}
 						key={index}
-						handleClick={() => setFocusIndex(index)}
+						handleClick={(event) => handleFocusClick( event , index)}
 						handleDeletePlayer={() => handleDeletePlayer(index)}
 						isFocused={index === focusIndex}
 						index={index}
@@ -227,7 +236,7 @@ const Calculator = () => {
 			</div>
 			<Board 
 				board={board} 
-				handleClick={() => setFocusIndex(99)} 
+				handleClick={(event) => handleFocusClick(event, 99)} 
 				isFocused={focusIndex === 99} 
 			/>
 			<button onClick={handleAddPlayer}>ADD PLAYER</button>
