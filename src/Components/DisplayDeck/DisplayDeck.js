@@ -3,20 +3,19 @@ import Card from "./Card";
 import "./Deck.css";
 
 const DisplayDeck = ({ setHoleCard, players, focusIndex, deck }) => {
-
-	return (
-		<div className="deck">
-			{deck.cards.map((card, index) => (
-				<Card
-					card={card}
-					key={index}
-					setHoleCard={() => setHoleCard(card, 2)}
-					players={players}
-					focusIndex={focusIndex}
-				/>
-			))}
-		</div>
-	);
+  return (
+    <div className="deck">
+      {deck.cards.map((card, index) => (
+        <Card
+          card={card}
+          key={index}
+          setHoleCard={setHoleCard}
+          players={players}
+          focusIndex={focusIndex}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default DisplayDeck;
