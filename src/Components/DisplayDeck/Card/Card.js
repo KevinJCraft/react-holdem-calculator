@@ -4,16 +4,16 @@ import { GiHearts, GiClubs, GiSpades, GiDiamonds } from "react-icons/gi";
 
 function getSuitIcon(suit) {
   switch (suit) {
-    case "heart":
+    case "h":
       return <GiHearts />;
 
-    case "spade":
+    case "s":
       return <GiSpades />;
 
-    case "diamond":
+    case "d":
       return <GiDiamonds />;
 
-    case "club":
+    case "c":
       return <GiClubs />;
 
     default:
@@ -22,16 +22,16 @@ function getSuitIcon(suit) {
 }
 function getSuitColor(suit) {
   switch (suit) {
-    case "heart":
+    case "h":
       return "red";
 
-    case "spade":
+    case "s":
       return "black";
 
-    case "diamond":
+    case "d":
       return "blue";
 
-    case "club":
+    case "c":
       return "green";
 
     default:
@@ -39,38 +39,10 @@ function getSuitColor(suit) {
   }
 }
 
-function getRankName(rank) {
-  if (rank < 10) {
-    return rank;
-  } else {
-    switch (rank) {
-      case 10:
-        return "T";
-
-      case 11:
-        return "J";
-
-      case 12:
-        return "Q";
-
-      case 13:
-        return "K";
-
-      case 14:
-        return "A";
-
-      default:
-        return "";
-    }
-  }
-}
-
 const Card = ({ card, setHoleCard, focusIndex, players }) => {
   function getLocationStyle(location) {
     if (location === "deck") return "in-deck";
-    if (location === "board" && focusIndex === 99) return "in-current-hand";
-    if (focusIndex !== 99 && location === players[focusIndex].key)
-      return "in-current-hand";
+    if (location === focusIndex) return "in-current-hand";
     return "in-other-hand";
   }
 
@@ -79,9 +51,9 @@ const Card = ({ card, setHoleCard, focusIndex, players }) => {
       className={`card ${getSuitColor(card.suit)} ${getLocationStyle(
         card.location
       )}`}
-      onClick={() => setHoleCard(card, focusIndex)}
+      onClick={() => setHoleCard(card)}
     >
-      <span>{getRankName(card.rank)}</span>
+      <span>{card.rank}</span>
       <div>{getSuitIcon(card.suit)}</div>
     </div>
   );

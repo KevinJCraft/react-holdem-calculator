@@ -4,16 +4,16 @@ import { GiHearts, GiClubs, GiSpades, GiDiamonds } from "react-icons/gi";
 
 function getSuitIcon(suit) {
   switch (suit) {
-    case "heart":
+    case "h":
       return <GiHearts />;
 
-    case "spade":
+    case "s":
       return <GiSpades />;
 
-    case "diamond":
+    case "d":
       return <GiDiamonds />;
 
-    case "club":
+    case "c":
       return <GiClubs />;
 
     default:
@@ -22,46 +22,20 @@ function getSuitIcon(suit) {
 }
 function getSuitColor(suit) {
   switch (suit) {
-    case "heart":
+    case "h":
       return "red";
 
-    case "spade":
+    case "s":
       return "black";
 
-    case "diamond":
+    case "d":
       return "blue";
 
-    case "club":
+    case "c":
       return "green";
 
     default:
       return "purple";
-  }
-}
-
-function getRankName(rank) {
-  if (rank < 10) {
-    return rank;
-  } else {
-    switch (rank) {
-      case 10:
-        return "T";
-
-      case 11:
-        return "J";
-
-      case 12:
-        return "Q";
-
-      case 13:
-        return "K";
-
-      case 14:
-        return "A";
-
-      default:
-        return "";
-    }
   }
 }
 
@@ -71,7 +45,7 @@ const HoleCard = ({ card, index, handleHoleCardClick }) => {
       className={`card ${getSuitColor(card.suit)}`}
       onClick={event => handleHoleCardClick(event, card, index)}
     >
-      <span>{getRankName(card.rank)}</span>
+      <span>{card.rank}</span>
       <div>{getSuitIcon(card.suit)}</div>
     </div>
   );

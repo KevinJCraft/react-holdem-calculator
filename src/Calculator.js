@@ -1,190 +1,174 @@
 import React, { useState } from "react";
 import Header from "./Components/Header";
 import PlayerBlock from "./Components/PlayerBlock";
-import Hand from "./Utils/hands";
 import Deck from "./Utils/deck";
 import DisplayDeck from "./Components/DisplayDeck";
 import Board from "./Components/Board";
 import "./Calculator.css";
 import shortid from "shortid";
+import { TexasHoldem } from "poker-odds-calc";
 
-const INITIAL_PLAYERS_STATE = [
-  { name: "Player 1", hand: new Hand(), key: shortid() },
-  { name: "Player 2", hand: new Hand(), key: shortid() }
-];
-
-const INITIAL_BOARD_STATE = { cards: [], key: shortid() };
+const INITIAL_BOARD_STATE = { cards: [], index: "board" };
+const INITIAL_PLAYER_STATE = { cards: [] };
 
 const INITIAL_DECK_STATE = new Deck();
 
 const Calculator = () => {
-  const [players, setPlayers] = useState(INITIAL_PLAYERS_STATE);
-  const [focusIndex, setFocusIndex] = useState(0);
+  const [players, setPlayers] = useState([
+    { ...INITIAL_PLAYER_STATE, index: shortid() },
+    { ...INITIAL_PLAYER_STATE, index: shortid() }
+  ]);
+  const [focusIndex, setFocusIndex] = useState(players[0].index);
   const [board, setBoard] = useState(INITIAL_BOARD_STATE);
   const [deck, setDeck] = useState(INITIAL_DECK_STATE);
 
-  const setHoleCard = (card, index) => {
-    //when the board is focused
-    if (index === 99) {
-      if (card.location === "deck" && board.cards.length < 5) {
-        let newBoard = { ...board };
-        newBoard.cards.push(card);
-        card.location = "board";
-        setBoard(newBoard);
-      } else if (card.location === "board") {
-        let newBoardHand = board.cards.filter(
-          obj => obj.identifier !== card.identifier
-        );
-        let newBoard = { ...board, cards: newBoardHand };
-        card.location = "deck";
-        setBoard(newBoard);
+  const setHoleCard = card => {
+    const MAX_SIZE = focusIndex === "board" ? 5 : 2;
+    if (card.location === focusIndex) {
+      removeCard(card);
+    } else if (card.location === "deck") {
+      let sizeOfHand = deck.cards.filter(card => card.location === focusIndex)
+        .length;
+      if (sizeOfHand < MAX_SIZE) {
+        addCard(card);
       }
-      // when a player hand is focused
-    } else if (index < players.length) {
-      if (players[index].hand.cards.length < 2 && card.location === "deck") {
-        let newPlayers = [...players];
-        newPlayers[index].hand.cards.push(card);
-        card.location = players[index].key;
-        setPlayers(newPlayers);
-      } else if (card.location === players[index].key) {
-        let newPlayers = [...players];
-        newPlayers[index].hand.cards = newPlayers[index].hand.cards.filter(
-          obj => obj.identifier !== card.identifier
-        );
-        card.location = "deck";
-        setPlayers(newPlayers);
+    }
+  };
+
+  const removeCard = (card, indexToRemoveFrom = focusIndex) => {
+    card.location = "deck";
+    let newPlayers = [...players].map(player => {
+      if (player.index === indexToRemoveFrom) {
+        let newPlayerCards = [...player.cards].filter(obj => obj !== card);
+        return {
+          ...player,
+          cards: newPlayerCards
+        };
+      } else {
+        return player;
       }
+    });
+    setPlayers(newPlayers);
+    if (indexToRemoveFrom === "board") {
+      let newBoard = {
+        ...board,
+        cards: [...board.cards].filter(obj => obj !== card)
+      };
+      setBoard(newBoard);
+    }
+  };
+
+  const addCard = card => {
+    card.location = focusIndex;
+
+    let newPlayers = [...players].map(player => {
+      if (player.index === card.location) {
+        let newPlayerCards = [...player.cards, card];
+        return {
+          ...player,
+          cards: newPlayerCards
+        };
+      } else {
+        return player;
+      }
+    });
+    setPlayers(newPlayers);
+
+    if (focusIndex === "board") {
+      let newBoard = {
+        ...board,
+        cards: [...board.cards, card]
+      };
+      setBoard(newBoard);
     }
   };
 
   const handleAddPlayer = () => {
     if (players.length < 6) {
-      let newPlayer = {
-        name: `Player ${players.length + 1}`,
-        hand: new Hand(),
-        key: shortid()
-      };
+      let newPlayer = { ...INITIAL_PLAYER_STATE, index: shortid() };
       let newPlayers = [...players, newPlayer];
-
       setPlayers(newPlayers);
     }
   };
 
-  const handleDeletePlayer = indexToDelete => {
-    if (indexToDelete === focusIndex) {
-      setFocusIndex(0);
-    }
+  const handleDeletePlayer = (event, playerToDelete) => {
+    event.stopPropagation();
+    deletePlayer(playerToDelete);
+  };
+
+  const deletePlayer = playerToDelete => {
     if (players.length > 2) {
-      players[indexToDelete].hand.cards.forEach(
-        card => (card.location = "deck")
-      );
+      playerToDelete.cards.forEach(card => {
+        removeCard(card, playerToDelete.index);
+      });
       let newPlayers = players.filter(
-        (player, index) => index !== indexToDelete
+        player => player.index !== playerToDelete.index
       );
+      if (focusIndex === playerToDelete.index) {
+        setFocusIndex(newPlayers[0].index);
+      }
+
       setPlayers(newPlayers);
     }
-  };
-
-  const compare = (calcPlayers, calcBoard) => {
-    calcPlayers.forEach(calcPlayer => {
-      if (calcPlayer.hand.cards.length > 0) {
-        calcPlayer.hand.cards = [...calcPlayer.hand.cards, ...calcBoard];
-        calcPlayer.hand.evaluate();
-        calcPlayer.hand.cards = calcPlayer.hand.cards.filter(
-          card => !calcBoard.includes(card)
-        );
-      }
-    });
-
-    let winningValue = calcPlayers.reduce(
-      (maxValue, calcPlayer) =>
-        maxValue > calcPlayer.hand.value ? maxValue : calcPlayer.hand.value,
-      0
-    );
-    let winningHands = calcPlayers.filter(
-      calcPlayer => calcPlayer.hand.value === winningValue
-    );
-
-    if (winningHands.length > 1) {
-      winningHands.forEach(calcPlayer => calcPlayer.hand.ties++);
-    } else {
-      winningHands.forEach(calcPlayer => calcPlayer.hand.wins++);
-    }
-
-    calcPlayers.forEach(calcPlayers => {
-      calcPlayers.hand.value = 0;
-      calcPlayers.hand.handsPlayed++;
-    });
   };
 
   const handleCalculate = () => {
-    let deckStub = new Deck();
-    deckStub.cards = [...deck.cards].filter(card => card.location === "deck");
-    let calcBoard = [...board.cards];
-    let calcPlayers = [...players];
-
-    calcPlayers.forEach(calcPlayer => calcPlayer.hand.resetResults());
-
-    if (calcBoard.length < 5) {
-      for (let i = 0; i < deckStub.cards.length; i++) {
-        calcBoard.push(deckStub.copyCard(i));
-
-        if (calcBoard.length === 5) {
-          compare(calcPlayers, calcBoard);
-          calcBoard.pop();
-        } else {
-          for (let j = i + 1; j < deckStub.cards.length; j++) {
-            calcBoard.push(deckStub.copyCard(j));
-
-            if (calcBoard.length === 5) {
-              compare(calcPlayers, calcBoard);
-              calcBoard.pop();
-            } else {
-              for (let a = j + 1; a < deckStub.cards.length; a++) {
-                calcBoard.push(deckStub.copyCard(a));
-
-                if (calcBoard.length === 5) {
-                  compare(calcPlayers, calcBoard);
-                  calcBoard.pop();
-                } else {
-                  for (let b = a + 1; b < deckStub.cards.length; b++) {
-                    calcBoard.push(deckStub.copyCard(b));
-
-                    if (calcBoard.length === 5) {
-                      compare(calcPlayers, calcBoard);
-                      calcBoard.pop();
-                    } else {
-                      for (let c = b + 1; c < deckStub.cards.length; c++) {
-                        calcBoard.push(deckStub.copyCard(c));
-
-                        if (calcBoard.length === 5) {
-                          compare(calcPlayers, calcBoard);
-                          calcBoard.pop();
-                        }
-                      }
-                      calcBoard.pop();
-                    }
-                  }
-                  calcBoard.pop();
-                }
-              }
-              calcBoard.pop();
-            }
-          }
-          calcBoard.pop();
-        }
+    if (board.cards.length === 1 || board.cards.length === 2) {
+      alert(
+        "The Board cannot have an incomplete flop.  Try again with no board cards or at least 3"
+      );
+      return;
+    }
+    players.forEach(player => {
+      if (player.cards.length === 0) {
+        console.log("welp");
+        deletePlayer(player);
       }
-    } else {
-      compare(calcPlayers, calcBoard);
+    });
+    let Table = new TexasHoldem();
+    let numOfEligiblePlayers = 0;
+    players.forEach(player => {
+      if (player.cards.length === 2) {
+        let hand = [player.cards[0].name, player.cards[1].name];
+        Table.addPlayer(hand);
+        numOfEligiblePlayers++;
+      }
+    });
+    if (numOfEligiblePlayers < 2) {
+      alert("Must have at least 2 playes with 2 cards each");
+      return;
+    }
+    if (board.cards.length > 0) {
+      let boardCards = board.cards.reduce((accum, card) => {
+        accum.push(card.name);
+        return accum;
+      }, []);
+      Table.setBoard(boardCards);
     }
 
-    setPlayers(calcPlayers);
+    const results = Table.calculate();
+
+    console.log(results);
+    let newPlayers = [...players];
+    let iterations = results.result.iterations;
+    results.result.players.forEach((playerResult, index) => {
+      newPlayers[index].winPercent = (
+        (playerResult.wins / iterations) *
+        100
+      ).toFixed(2);
+      newPlayers[index].tiePercent = (
+        (playerResult.ties / iterations) *
+        100
+      ).toFixed(2);
+    });
+
+    setPlayers(newPlayers);
   };
 
   const handleClearCards = () => {
     setPlayers([
-      { name: "Player 1", hand: new Hand(), key: shortid() },
-      { name: "Player 2", hand: new Hand(), key: shortid() }
+      { ...INITIAL_PLAYER_STATE, index: shortid() },
+      { ...INITIAL_PLAYER_STATE, index: shortid() }
     ]);
     setDeck(new Deck());
     setBoard({ cards: [], key: shortid() });
@@ -196,7 +180,7 @@ const Calculator = () => {
 
   const handleHoleCardClick = (event, card, index) => {
     event.stopPropagation();
-    if (card.rank) setHoleCard(card, index);
+    if (card.rank) removeCard(card, index);
     else setFocusIndex(index);
   };
   return (
@@ -206,20 +190,20 @@ const Calculator = () => {
         {players.map((player, index) => (
           <PlayerBlock
             player={player}
-            key={index}
-            handleClick={event => handleFocusClick(event, index)}
-            handleDeletePlayer={() => handleDeletePlayer(index)}
+            key={player.index}
+            handleClick={event => handleFocusClick(event, player.index)}
+            handleDeletePlayer={handleDeletePlayer}
             handleHoleCardClick={handleHoleCardClick}
-            isFocused={index === focusIndex}
+            isFocused={player.index === focusIndex}
             index={index}
           />
         ))}
       </div>
       <Board
         board={board}
-        handleClick={event => handleFocusClick(event, 99)}
+        handleClick={event => handleFocusClick(event, "board")}
         handleHoleCardClick={handleHoleCardClick}
-        isFocused={focusIndex === 99}
+        isFocused={focusIndex === "board"}
       />
       <button onClick={handleAddPlayer}>ADD PLAYER</button>
       <button onClick={handleCalculate}>RUN</button>

@@ -4,19 +4,13 @@ import "./Board.css";
 
 const defaultCard = { color: "purple", rankName: "", suit: "" };
 
-const Board = ({
-  board,
-  handleClick,
-  isFocused,
-  handleDeletePlayer,
-  handleHoleCardClick
-}) => {
+const Board = ({ board, handleClick, isFocused, handleHoleCardClick }) => {
   const displayBoardCards = () => {
     let boardCards = [];
     for (let i = 0; i < 5; i++) {
       boardCards.push(
         <HoleCard
-          index={99}
+          index={"board"}
           handleHoleCardClick={handleHoleCardClick}
           card={board.cards[i] ? board.cards[i] : defaultCard}
           key={i}
