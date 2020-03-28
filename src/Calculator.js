@@ -9,7 +9,7 @@ import shortid from "shortid";
 import { TexasHoldem } from "poker-odds-calc";
 
 const INITIAL_BOARD_STATE = { cards: [], index: "board" };
-const INITIAL_PLAYER_STATE = { cards: [] };
+const INITIAL_PLAYER_STATE = { cards: [], winPercent: null, tiePercent: null };
 
 const INITIAL_DECK_STATE = new Deck();
 
@@ -35,7 +35,16 @@ const Calculator = () => {
     }
   };
 
+  const resetResults = () => {
+    let newPlayers = [...players];
+    newPlayers.forEach(player => {
+      player.winPercent = null;
+      player.tiePercent = null;
+    });
+  };
+
   const removeCard = (card, indexToRemoveFrom = focusIndex) => {
+    if (players[0].winPercent) resetResults();
     card.location = "deck";
     let newPlayers = [...players].map(player => {
       if (player.index === indexToRemoveFrom) {
@@ -59,6 +68,8 @@ const Calculator = () => {
   };
 
   const addCard = card => {
+    if (players[0].winPercent) resetResults();
+
     card.location = focusIndex;
 
     let newPlayers = [...players].map(player => {
