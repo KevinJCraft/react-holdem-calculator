@@ -35,7 +35,7 @@ function getSuitColor(suit) {
       return "green";
 
     default:
-      return "purple";
+      return "default";
   }
 }
 
@@ -48,9 +48,9 @@ const Card = ({ card, setHoleCard, focusIndex, players }) => {
 
   return (
     <div
-      className={`card ${getSuitColor(card.suit)} ${getLocationStyle(
-        card.location
-      )}`}
+      className={`deckCard ${card.rank === "J" && "jack"} ${getSuitColor(
+        card.suit
+      )} ${getLocationStyle(card.location)}`}
       onClick={() => setHoleCard(card)}
     >
       <span>{card.rank}</span>

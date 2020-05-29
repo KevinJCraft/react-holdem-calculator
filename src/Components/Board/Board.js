@@ -1,6 +1,8 @@
 import React from "react";
 import HoleCard from "../HoleCard";
 import "./Board.css";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const defaultCard = { color: "purple", rankName: "", suit: "" };
 
@@ -20,13 +22,19 @@ const Board = ({ board, handleClick, isFocused, handleHoleCardClick }) => {
     return boardCards;
   };
   return (
-    <div
-      className={`player-card ${isFocused && "is-focused"}`}
+    <Row
+      className={`board-card ${
+        isFocused && "is-focused"
+      } shadow d-flex align-items-center`}
       onClick={handleClick}
     >
-      <div className="player-card-cards">{displayBoardCards()}</div>
-      <h3>Board</h3>
-    </div>
+      <Col className="board-card-cards p-0 p-sm-2" xs="auto">
+        {displayBoardCards()}
+      </Col>
+      <Col className="p-0 p-sm-2">
+        <h3>Board</h3>
+      </Col>
+    </Row>
   );
 };
 

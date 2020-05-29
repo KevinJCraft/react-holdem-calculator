@@ -1,25 +1,29 @@
 .player-card {
-	width: 95%;
-	margin: auto;
-	display: flex;
-	flex-direction: row;
-	text-align: left;
+  width: 95%;
+  margin: 0 auto 0.5em auto;
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+  padding: 0.25em;
+  cursor: pointer;
 }
 
 .player-card-cards {
-	display: flex;
-	justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 }
 
 .player-card h3 {
-	flex: 1;
+  flex: 1;
 }
 
 .player-card-results {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .is-focused {
-	background-color: green;
+  transition: all 0.25s ease-in-out;
+  transform: scaleY(1.1);
+  background-color: rgba(248, 244, 27, 0.4);
 }

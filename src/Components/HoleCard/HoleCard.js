@@ -35,15 +35,17 @@ function getSuitColor(suit) {
       return "green";
 
     default:
-      return "purple";
+      return "back-of-card";
   }
 }
 
 const HoleCard = ({ card, index, handleHoleCardClick }) => {
   return (
     <div
-      className={`card ${getSuitColor(card.suit)}`}
-      onClick={event => handleHoleCardClick(event, card, index)}
+      className={`holeCard ${card.rank === "J" && "jack"} ${getSuitColor(
+        card.suit
+      )}`}
+      onClick={(event) => handleHoleCardClick(event, card, index)}
     >
       <span>{card.rank}</span>
       <div>{getSuitIcon(card.suit)}</div>

@@ -1,23 +1,31 @@
 import React from "react";
 import HoleCard from "../HoleCard";
 import "./PlayerBlock.css";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
 
-const defaultCard = { color: "purple", rankName: "", suit: "" };
+const defaultCard = { color: "default", rankName: "", suit: "" };
 
 const PlayerBlock = ({
   player,
+  numOfPlayers,
   handleClick,
   isFocused,
   index,
   handleDeletePlayer,
-  handleHoleCardClick
+  handleHoleCardClick,
 }) => {
   return (
-    <div
-      className={`player-card ${isFocused && "is-focused"}`}
-      onClick={event => handleClick(event)}
+    <Row
+      className={`player-card ${isFocused && "is-focused"} shadow  `}
+      onClick={(event) => handleClick(event)}
     >
-      <div className="player-card-cards">
+      <Col
+        className="player-card-cards d-flex align-items-center justify-content-around p-0 p-sm-2"
+        xs="auto"
+      >
         <HoleCard
           handleHoleCardClick={handleHoleCardClick}
           index={player.index}
@@ -28,19 +36,35 @@ const PlayerBlock = ({
           index={player.index}
           card={player.cards[1] ? player.cards[1] : defaultCard}
         />
-      </div>
-      <h3>{`Player ${index + 1}`}</h3>
-      <div className="player-card-results">
-        <span>{player.winPercent && `win: ${player.winPercent}`}</span>
-        <span>{player.tiePercent && `tie: ${player.tiePercent}`}</span>
-      </div>
-      <button
-        className="player-card-delete"
-        onClick={event => handleDeletePlayer(event, player)}
+      </Col>
+      <Col className="d-flex align-items-center p-0 p-sm-2">
+        <h3 className="m-0 ">{`Player ${index + 1}`}</h3>
+      </Col>
+      <Col
+        className="player-card-results d-flex align-items-center justify-content-around p-1 p-sm-2 p-sm-1"
+        xs="auto"
       >
-        X
-      </button>
-    </div>
+        <Badge className="p-1" variant="success">
+          {player.winPercent && `WIN: ${player.winPercent}`}
+        </Badge>
+        <Badge className="p-1" variant="warning">
+          {player.tiePercent && `TIE: ${player.tiePercent}`}
+        </Badge>
+      </Col>
+      {numOfPlayers > 2 && (
+        <Col
+          xs="auto"
+          className="d-flex align-items-center justify-content-around p-0 p-sm-2"
+        >
+          <Button
+            onClick={(event) => handleDeletePlayer(event, player)}
+            variant="danger"
+          >
+            X
+          </Button>
+        </Col>
+      )}
+    </Row>
   );
 };
 
